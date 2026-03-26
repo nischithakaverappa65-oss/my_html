@@ -1,1 +1,454 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is This Source Legit? — Website Evaluation Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0BBFB0; --yellow: #FFD84D; --coral: #FF6B6B;
+    --purple: #7B5EA7; --navy: #1A1F4B; --light: #F4F9FF; --green: #3DD68C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif; background: var(--light);
+    min-height: 100vh; display: flex; justify-content: center; padding: 30px 16px;
+  }
+  .page {
+    width: 780px; background: white; border-radius: 24px; overflow: hidden;
+    box-shadow: 0 8px 40px rgba(26,31,75,0.13); animation: fadeUp 0.6s ease both;
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+  /* HEADER */
+  .header { background: var(--navy); padding: 32px 40px 24px; position: relative; overflow: hidden; }
+  .header::before {
+    content: ''; position: absolute; width: 240px; height: 240px;
+    background: var(--teal); opacity: 0.12; border-radius: 50%; top: -70px; right: -50px;
+  }
+  .badge {
+    display: inline-block; background: var(--yellow); color: var(--navy);
+    font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 10px;
+  }
+  .header h1 { font-family: 'Fredoka One', cursive; font-size: 36px; color: white; line-height: 1.15; position: relative; z-index: 1; }
+  .header h1 span { color: var(--teal); }
+  .header p { color: rgba(255,255,255,0.65); font-size: 13px; margin-top: 8px; font-weight: 600; position: relative; z-index: 1; }
+
+  /* SOURCE BAR */
+  .source-bar { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.08); padding: 12px 40px; display: flex; gap: 20px; flex-wrap: wrap; }
+  .source-field { display: flex; align-items: center; gap: 8px; }
+  .source-field label { font-size: 11px; font-weight: 800; color: var(--teal); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+  .source-field input {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px; color: white; font-family: 'Nunito', sans-serif; font-size: 13px;
+    padding: 5px 12px; width: 190px; outline: none; transition: border 0.2s;
+  }
+  .source-field input::placeholder { color: rgba(255,255,255,0.35); }
+  .source-field input:focus { border-color: var(--teal); }
+
+  /* BODY */
+  .body { padding: 28px 40px 36px; }
+
+  /* SECTION */
+  .section { margin-bottom: 18px; border-radius: 16px; overflow: hidden; border: 2px solid transparent; transition: transform 0.2s; }
+  .section:hover { transform: translateY(-2px); }
+  .section.teal   { border-color: var(--teal); }
+  .section.yellow { border-color: var(--yellow); }
+  .section.coral  { border-color: var(--coral); }
+  .section.purple { border-color: var(--purple); }
+  .section.green  { border-color: var(--green); }
+
+  .section-header { display: flex; align-items: center; gap: 12px; padding: 12px 18px; }
+  .section.teal   .section-header { background: rgba(11,191,176,0.09); }
+  .section.yellow .section-header { background: rgba(255,216,77,0.11); }
+  .section.coral  .section-header { background: rgba(255,107,107,0.09); }
+  .section.purple .section-header { background: rgba(123,94,167,0.09); }
+  .section.green  .section-header { background: rgba(61,214,140,0.09); }
+
+  .section-icon { font-size: 22px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; }
+  .section.teal   .section-icon { background: rgba(11,191,176,0.15); }
+  .section.yellow .section-icon { background: rgba(255,216,77,0.2); }
+  .section.coral  .section-icon { background: rgba(255,107,107,0.15); }
+  .section.purple .section-icon { background: rgba(123,94,167,0.15); }
+  .section.green  .section-icon { background: rgba(61,214,140,0.15); }
+
+  .section-meta { flex: 1; }
+  .section-title { font-family: 'Fredoka One', cursive; font-size: 18px; }
+  .section.teal   .section-title { color: #0a9e91; }
+  .section.yellow .section-title { color: #b8931a; }
+  .section.coral  .section-title { color: #d94f4f; }
+  .section.purple .section-title { color: var(--purple); }
+  .section.green  .section-title { color: #1fa864; }
+  .section-ask { font-size: 12px; color: #777; font-weight: 700; margin-top: 2px; font-style: italic; }
+
+  .where-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(26,31,75,0.07); border-radius: 20px; padding: 4px 11px;
+    font-size: 11px; font-weight: 700; color: #555; white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* ITEMS */
+  .items { padding: 4px 18px 14px; }
+  .item { display: flex; align-items: flex-start; gap: 12px; padding: 9px 0; border-bottom: 1px dashed rgba(0,0,0,0.06); cursor: pointer; }
+  .item:last-child { border-bottom: none; }
+
+  .checkbox {
+    width: 20px; height: 20px; border-radius: 5px; border: 2.5px solid #ccc;
+    flex-shrink: 0; margin-top: 3px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .item.checked .checkbox { border-color: transparent; }
+  .section.teal   .item.checked .checkbox { background: var(--teal); }
+  .section.yellow .item.checked .checkbox { background: #e8b800; }
+  .section.coral  .item.checked .checkbox { background: var(--coral); }
+  .section.purple .item.checked .checkbox { background: var(--purple); }
+  .section.green  .item.checked .checkbox { background: var(--green); }
+
+  .checkmark { display: none; color: white; font-size: 12px; font-weight: 900; }
+  .item.checked .checkmark { display: block; }
+
+  .item-body { flex: 1; }
+  .item-text { font-size: 13.5px; color: var(--navy); font-weight: 700; line-height: 1.4; }
+  .item.checked .item-text { color: #bbb; text-decoration: line-through; text-decoration-color: #ddd; }
+
+  /* HINT — always visible */
+  .item-hint {
+    font-size: 12px; color: #888; font-weight: 600;
+    margin-top: 3px; font-style: italic;
+  }
+  .item.checked .item-hint { color: #ccc; }
+
+  /* IF NO — hover reveal */
+  .if-no {
+    display: none; margin-top: 6px;
+    background: #fff4f4; border-left: 3px solid #e74c3c;
+    border-radius: 0 6px 6px 0; padding: 5px 10px;
+    font-size: 11.5px; color: #c0392b; font-weight: 700; line-height: 1.4;
+  }
+  .if-no-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #e74c3c; font-weight: 800; margin-bottom: 2px; }
+  .item:hover .if-no { display: block; }
+  .item.checked .if-no { display: none !important; }
+
+  /* VERDICT */
+  .verdict-section { background: var(--navy); border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  .verdict-icon { font-size: 36px; flex-shrink: 0; }
+  .verdict-label { font-family: 'Fredoka One', cursive; font-size: 12px; color: var(--teal); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .verdict-text { font-family: 'Fredoka One', cursive; font-size: 20px; color: white; }
+  .verdict-sub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 3px; font-weight: 600; }
+  .score-bar-wrap { flex: 1; }
+  .score-display { text-align: right; font-family: 'Fredoka One', cursive; font-size: 26px; color: white; margin-bottom: 5px; }
+  .score-display span { color: var(--teal); font-size: 14px; }
+  .score-bar-bg { height: 9px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--teal), var(--green)); transition: width 0.5s ease; width: 0%; }
+
+  /* NOTES */
+  .notes-area { margin-top: 18px; background: #f8faff; border-radius: 14px; padding: 16px 20px; border: 2px dashed #dde3f0; }
+  .notes-label { font-family: 'Fredoka One', cursive; font-size: 14px; color: var(--navy); margin-bottom: 8px; }
+  .notes-area textarea { width: 100%; background: transparent; border: none; outline: none; font-family: 'Nunito', sans-serif; font-size: 13px; color: var(--navy); font-weight: 600; resize: none; min-height: 60px; line-height: 1.8; }
+  .notes-area textarea::placeholder { color: #bbb; }
+
+  /* FOOTER */
+  .footer { background: #f0f4ff; padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .footer-left { font-size: 11px; color: #aaa; font-weight: 700; letter-spacing: 0.5px; }
+  .hover-hint { font-size: 11px; color: #999; font-weight: 700; font-style: italic; }
+  .reset-btn { background: var(--navy); color: white; border: none; border-radius: 10px; padding: 7px 16px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .reset-btn:hover { background: var(--purple); transform: scale(1.03); }
+
+  @media (max-width: 600px) {
+    .header, .body, .footer { padding-left: 20px; padding-right: 20px; }
+    .source-bar { padding: 10px 20px; }
+    .header h1 { font-size: 26px; }
+    .source-field input { width: 130px; }
+    .where-pill { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="badge">📋 Credible Source Checklist</div>
+    <h1>Is This Source <span>Legit?</span></h1>
+    <p>Use this checklist every time you research online. Hover over any item to reveal what to do if the answer is NO.</p>
+  </div>
+
+  <div class="source-bar">
+    <div class="source-field"><label>Website URL</label><input type="text" placeholder="e.g. www.nasa.gov" /></div>
+    <div class="source-field"><label>Your Name</label><input type="text" placeholder="First Last" /></div>
+    <div class="source-field"><label>Date</label><input type="text" placeholder="MM/DD/YYYY" /></div>
+  </div>
+
+  <div class="body">
+
+    <!-- SECTION 1 -->
+    <div class="section teal">
+      <div class="section-header">
+        <div class="section-icon">🔗</div>
+        <div class="section-meta">
+          <div class="section-title">Section 1: URL & Domain</div>
+          <div class="section-ask">Ask yourself: What does the web address tell me?</div>
+        </div>
+        <div class="where-pill">👀 Look at: your browser's address bar</div>
+      </div>
+      <div class="items">
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">I checked the domain extension (.gov, .edu, .org, .com)</div>
+            <div class="item-hint">💡 .gov and .edu are restricted — usually more trustworthy than .com or .org</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Look up who owns the site at whois.domaintools.com before trusting it</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">The URL looks clean — no random numbers, weird symbols, or misspelled brand names</div>
+            <div class="item-hint">💡 Sketchy URLs are a red flag — trust your gut!</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Stop here. Fake sites copy real URLs with small typos (e.g. "amaz0n.com"). Find a different source</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">I didn't just trust the domain — I also checked the actual content</div>
+            <div class="item-hint">💡 A .org site can still be misleading (e.g. passportUSA.org)</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Scroll through the whole page before deciding if you can trust it</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section purple">
+      <div class="section-header">
+        <div class="section-icon">🧑‍💼</div>
+        <div class="section-meta">
+          <div class="section-title">Section 2: Author & Credibility</div>
+          <div class="section-ask">Ask yourself: Who wrote this — and should I trust them?</div>
+        </div>
+        <div class="where-pill">👀 Look at: "About Us," author byline, footer</div>
+      </div>
+      <div class="items">
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">I can find the name of the author or organization behind this site</div>
+            <div class="item-hint">💡 Check the "About Us" page or footer — anonymous sources are suspicious</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>No author = major red flag. Anonymous sources are not trustworthy. Find a different source</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">The author's background or experience actually matches the topic</div>
+            <div class="item-hint">💡 A doctor writing about medicine = trustworthy. A random blogger = be cautious</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Look for a qualified expert on your topic instead — credentials should match the subject</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">I Googled the author to confirm they are who they say they are</div>
+            <div class="item-hint">💡 2 minutes of Googling can save you from using a fake expert!</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO results —</div>Real experts have an online presence. Zero results = suspicious. Keep digging</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section coral">
+      <div class="section-header">
+        <div class="section-icon">🔍</div>
+        <div class="section-meta">
+          <div class="section-title">Section 3: Accuracy & Quality</div>
+          <div class="section-ask">Ask yourself: Can I actually trust what this site is saying?</div>
+        </div>
+        <div class="where-pill">👀 Look at: article body, links, footnotes</div>
+      </div>
+      <div class="items">
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">There are no major spelling, grammar, or punctuation errors</div>
+            <div class="item-hint">💡 Lots of errors = low effort = the information probably wasn't carefully checked either</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Don't use it. Errors suggest the content wasn't reviewed for accuracy either. Move on</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">The site links to other reputable sources to support its claims</div>
+            <div class="item-hint">💡 Credible sites show their evidence — like footnotes in a textbook</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>No evidence = unproven claims. Look for sources that back up what they say with real facts</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">I found the same information on at least one other trustworthy source</div>
+            <div class="item-hint">💡 If only one site says it, be very skeptical!</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Keep searching. If only ONE site says it, the information may be false or made up</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section yellow">
+      <div class="section-header">
+        <div class="section-icon">⚖️</div>
+        <div class="section-meta">
+          <div class="section-title">Section 4: Bias & Purpose</div>
+          <div class="section-ask">Ask yourself: Is this site trying to influence me?</div>
+        </div>
+        <div class="where-pill">👀 Look at: headlines, ads, tone of writing</div>
+      </div>
+      <div class="items">
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">The site presents balanced information — not just one strong opinion</div>
+            <div class="item-hint">💡 One-sided articles and opinionated blogs are signs of bias</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Note the bias in your notes box and find a more balanced source to compare it with</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">The headline doesn't use clickbait words like "SHOCKING," "You won't believe..." or "ALARMING"</div>
+            <div class="item-hint">💡 Clickbait is designed to get clicks — not to inform you</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Skip it. Sensational headlines usually mean the content prioritizes drama over facts</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">Any ads on the page don't push a specific viewpoint or try to sell me something related to the content</div>
+            <div class="item-hint">💡 Ads that match the article's opinion = possible paid bias</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Ask yourself: is this site trying to change my mind or make money? That affects its reliability</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section green">
+      <div class="section-header">
+        <div class="section-icon">📅</div>
+        <div class="section-meta">
+          <div class="section-title">Section 5: Currency & Relevance</div>
+          <div class="section-ask">Ask yourself: Is this information up to date and useful for my topic?</div>
+        </div>
+        <div class="where-pill">👀 Look at: page footer, article top, copyright date</div>
+      </div>
+      <div class="items">
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">I can find a publication or "last updated" date on the page</div>
+            <div class="item-hint">💡 No date = no way to know if this is outdated information</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Try to find a dated version of the same information on a different site</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">The information is recent enough for my topic (especially science, health, or current events)</div>
+            <div class="item-hint">💡 A 2009 article about COVID-19 is useless — always check the date!</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Old information can be dangerously wrong on fast-changing topics. Search for a more recent article</div>
+          </div>
+        </div>
+
+        <div class="item" onclick="toggle(this)">
+          <div class="checkbox"><span class="checkmark">✓</span></div>
+          <div class="item-body">
+            <div class="item-text">The content directly answers or relates to my research question</div>
+            <div class="item-hint">💡 A great source on the wrong topic still doesn't help your research!</div>
+            <div class="if-no"><div class="if-no-label">❌ If NO —</div>Refine your search terms and try again — relevance is just as important as credibility</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VERDICT -->
+    <div class="verdict-section">
+      <div class="verdict-icon" id="verdictIcon">🤔</div>
+      <div>
+        <div class="verdict-label">My Verdict</div>
+        <div class="verdict-text" id="verdictText">Start checking boxes above!</div>
+        <div class="verdict-sub" id="verdictSub">Check off each item to see your score</div>
+      </div>
+      <div class="score-bar-wrap">
+        <div class="score-display"><span>Score: </span><span id="scoreNum">0</span>/15</div>
+        <div class="score-bar-bg"><div class="score-bar-fill" id="scoreBar"></div></div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="notes-area">
+      <div class="notes-label">📝 My Notes About This Source</div>
+      <textarea placeholder="Write anything you noticed — what made it trustworthy or suspicious..."></textarea>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">IS THIS SOURCE LEGIT? · WEBSITE EVALUATION CHECKLIST</div>
+    <div class="hover-hint">💡 Hover over any item to reveal what to do if the answer is NO</div>
+    <button class="reset-btn" onclick="resetAll()">↺ Start Over</button>
+  </div>
+
+</div>
+
+<script>
+  function toggle(el) {
+    el.classList.toggle('checked');
+    const total = document.querySelectorAll('.item.checked').length;
+    document.getElementById('scoreNum').textContent = total;
+    document.getElementById('scoreBar').style.width = (total / 15 * 100) + '%';
+    let icon, text, sub;
+    if (total === 0)      { icon='🤔'; text='Start checking boxes above!'; sub='Check off each item to see your score'; }
+    else if (total <= 5)  { icon='⚠️'; text='Proceed with Caution'; sub='This source needs more investigation before using it'; }
+    else if (total <= 9)  { icon='🧐'; text='Looking Pretty Good…'; sub='Keep checking — you\'re getting closer to a verdict!'; }
+    else if (total <= 12) { icon='👍'; text='This Source Seems Reliable'; sub='Most boxes checked — good choice for research!'; }
+    else                  { icon='✅'; text='This Source is Legit!'; sub='All boxes checked — great find! Go ahead and use it.'; }
+    document.getElementById('verdictIcon').textContent = icon;
+    document.getElementById('verdictText').textContent = text;
+    document.getElementById('verdictSub').textContent = sub;
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.item').forEach(i => i.classList.remove('checked'));
+    document.querySelectorAll('input').forEach(i => i.value = '');
+    document.querySelector('textarea').value = '';
+    document.getElementById('scoreNum').textContent = '0';
+    document.getElementById('scoreBar').style.width = '0%';
+    document.getElementById('verdictIcon').textContent = '🤔';
+    document.getElementById('verdictText').textContent = 'Start checking boxes above!';
+    document.getElementById('verdictSub').textContent = 'Check off each item to see your score';
+  }
+</script>
+</body>
+</html>
