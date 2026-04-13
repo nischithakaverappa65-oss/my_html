@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Illinois Cloud Scout Adventure</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e0f7fa; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        #game-container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 650px; text-align: center; border: 4px solid #0288d1; }
+        .standard-tag { font-size: 0.85em; color: #555; background: #e1f5fe; padding: 5px 10px; border-radius: 5px; display: inline-block; margin-bottom: 20px; font-weight: bold; }
+        .cloud-icon { font-size: 70px; margin-bottom: 20px; }
+        button { background-color: #0288d1; color: white; border: none; padding: 15px 25px; margin: 10px; border-radius: 50px; cursor: pointer; font-size: 1.1em; transition: 0.3s; width: 80%; }
+        button:hover { background-color: #01579b; transform: scale(1.02); }
+        #story-text { font-size: 1.25em; line-height: 1.6; margin-bottom: 30px; min-height: 100px; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div class="standard-tag">Illinois Standards: Science 3-ESS2-1 | Social Science SS.G.1.K</div>
+    <div id="visual" class="cloud-icon">☀️</div>
+    <div id="story-text">Welcome, Scout! You are planning a community picnic in Illinois. You look up and see thin, wispy clouds that look like "horse tails" high in the sky. What are they?</div>
+    <div id="choices">
+        <button onclick="updateGame('cirrus')">Cirrus: Feathery and high up</button>
+        <button onclick="updateGame('stratus')">Stratus: Flat and layered</button>
+        <button onclick="updateGame('cumulus')">Cumulus: Fluffy cotton balls</button>
+    </div>
+</div>
+
+<script>
+    const adventure = {
+        cirrus: {
+            icon: "🐎",
+            text: "Correct! These are <b>Cirrus</b> clouds. They are made of ice crystals and mean fair weather for now. But wait, a few hours later, a flat 'blanket' of gray clouds starts to cover the sky. What now?",
+            options:
+        },
+        stratus_path: {
+            icon: "🌫️",
+            text: "Spot on! These <b>Stratus</b> clouds mean a chilly, overcast day. The community is asking if they should bring umbrellas. What do you tell them?",
+            options:
+        },
+        cumulus: {
+            icon: "☁️",
+            text: "Not quite! Cumulus clouds look like white cotton wool. These look more like wispy curls of hair. Try again!",
+            options:
+        },
+        stratus: {
+            icon: "📏",
+            text: "Not those! Stratus clouds are horizontal 'sheets' that cover the whole sky. These are high and wispy. Try again!",
+            options:
+        },
+        nimbus_fail: {
+            icon: "❌",
+            text: "Oh no! <b>Nimbus</b> clouds are dark and gray rain-bearers. These clouds haven't turned dark yet. Your prediction was off! Try again.",
+            options:
+        },
+        win: {
+            icon: "🏆",
+            text: "You win! You used your knowledge of cloud shapes and heights to help the community prepare for a gloomy day. You are a Master Cloud Scout!",
+            options:
+        }
+    };
+
+    function updateGame(step) {
+        if (step === 'start') { location.reload(); return; }
+        const scene = adventure[step];
+        document.getElementById('visual').innerText = scene.icon;
+        document.getElementById('story-text').innerHTML = scene.text;
+        const buttonArea = document.getElementById('choices');
+        buttonArea.innerHTML = '';
+        scene.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerText = opt.text;
+            btn.onclick = () => updateGame(opt.next);
+            buttonArea.appendChild(btn);
+        });
+    }
+</script>
+
+</body>
+</html>
